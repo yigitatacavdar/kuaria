@@ -1,5 +1,50 @@
+kuariaAscii = r"""
+               ______
+              /     /       .                     .                         .               .
+ .           /     /                        . 
+            /     /   __________      ______________  ___________  ___________________________  ______
+        .  /     /   /         /     /    /         \/     /     \/          /      /         \/     /   .
+          /     /  /   / /    /     /    /    ______      /      ___________/______/    ______      /
+   .     /     / /   /  /    /     /    /    /     /     /      /          /      /    /     /     /
+        /      /   /   /    /     /    /    /     /     /      /  .       /      /    /     /     /  .
+       /         /    /    /     /    /    /     /     /      /          /      /    /     /     /
+      /        /     /    /     /    /    /     /     /      /      .   /      /    /     /     /       .
+.    /    /\    \   /    /_____/    /    /_____/     /      /          /      /    /_____/     /
+    /    /  \    \ /               /                 \     /  .       /      /                 \  .       .
+___/____/    \____________________/___________________\___/          /______/___________________\___
+"""
+
 import nmap
 from napalm import get_network_driver
+from napalm.base.exceptions import ConnectionException
+from netmiko import NetmikoAuthenticationException
+
+optional_args_base = {
+    "allow_agent": False,
+    "look_for_keys": False,
+    "global_delay_factor": 2,
+    "fast_cli": False,
+    "key_exchange": [
+        "diffie-hellman-group14-sha1",
+        "diffie-hellman-group1-sha1",
+        "diffie-hellman-group-exchange-sha256",
+        "ecdh-sha2-nistp256",
+    ],
+}
+
+def loadCommonCreds(path="commonCreds.txt"):
+    creds = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = [p.strip() for p in line.split(",", 2)]
+            while len(parts) < 3:
+                parts.append("")
+            username, password, secret = parts
+            creds.append((username, password, secret))
+    return creds
 
 def networkScannerFunc(subnetIpInput):
 
@@ -52,54 +97,87 @@ def getDeviceFacts(deviceIpInput, deviceUserInput, devicePasswordInput, deviceSe
     "key_exchange": ["diffie-hellman-group14-sha1", "diffie-hellman-group1-sha1", "diffie-hellman-group-exchange-sha256", "ecdh-sha2-nistp256"]}
 
     device = driver(hostname=deviceIpInput, username=deviceUserInput, password=devicePasswordInput, optional_args=optional_args)
+    try:
+        device.open()
+        print("retrieving device info...")
+        facts = device.get_facts()
+        device.close()
+        return facts
+    except (ConnectionException, NetmikoAuthenticationException) as e:
+        print("connection failed!")
+        autoConnect()
 
-    device.open()
-    facts = device.get_facts()
-    device.close()
+def connectDevice(deviceIpInput, deviceUserInput, devicePasswordInput, deviceSecretInput):
+    if __name__ == "__main__":
+        deviceInfo = getDeviceFacts(deviceIpInput, deviceUserInput, devicePasswordInput, deviceSecretInput)
+        print(f"Device: {deviceInfo['vendor']} {deviceInfo['model']}")
 
-    return facts
+def scan(subnetIpInput):
+    print("scanning...")
+    networkScannerFunc(subnetIpInput)
 
+    print('----------------------------------------------------')
 
-kuariaAscii = r"""
-               ______
-              /     /       .                     .                         .               .
- .           /     /                        . 
-            /     /   __________      ______________  ___________  ___________________________  ______
-        .  /     /   /         /     /    /         \/     /     \/          /      /         \/     /   .
-          /     /  /   / /    /     /    /    ______      /      ___________/______/    ______      /
-   .     /     / /   /  /    /     /    /    /     /     /      /          /      /    /     /     /
-        /      /   /   /    /     /    /    /     /     /      /  .       /      /    /     /     /  .
-       /         /    /    /     /    /    /     /     /      /          /      /    /     /     /
-      /        /     /    /     /    /    /     /     /      /      .   /      /    /     /     /       .
-.    /    /\    \   /    /_____/    /    /_____/     /      /          /      /    /_____/     /
-    /    /  \    \ /               /                 \     /  .       /      /                 \  .       .
-___/____/    \____________________/___________________\___/          /______/___________________\___
-"""
+def autoConnect(deviceIpInput):
+    print("trying to connect with common credentials...")
 
-print(kuariaAscii)
-print("created by yigit ata cavdar")
-print('\n----------------------------------------------------')
-subnetIpInput = input("\nEnter the subnet you want to work with: ")
-print("scanning...")
-networkScannerFunc(subnetIpInput)
+    for usernameCommon, passwordCommon, secretCommon in loadCommonCreds("commonCreds.txt"):
+        optional_args = dict(optional_args_base)
+        if secretCommon:
+            optional_args["secret"] = secretCommon 
 
-print('----------------------------------------------------')
+        driver = get_network_driver("ios")
 
-deviceIpInput = input("enter the ip address of the device you want to work with: ")
-deviceUserInput = input("enter the username of the device you want to work with: ")
-devicePasswordInput = input("enter the password of the device you want to work with: ")
-deviceSecretInput = input("enter the enable password of the device you want to work with: ")
+        try:
+            device = driver(hostname=deviceIpInput, username=usernameCommon, password=passwordCommon, optional_args=optional_args)
+            device.open()
+        except (ConnectionException, NetmikoAuthenticationException):
+            continue
+        else:
+            print("connected")
+            print("username and password found as: %s, %s" % (usernameCommon, passwordCommon))
+            connectDevice(deviceIpInput, usernameCommon, passwordCommon, secretCommon)
+            device.close()
+            return
 
-print("connecting...")
-
-if __name__ == "__main__":
-    deviceInfo = getDeviceFacts(deviceIpInput, deviceUserInput, devicePasswordInput, deviceSecretInput)
-    print("connected")
-    print(f"Device: {deviceInfo['vendor']} {deviceInfo['model']}")  #the program should try common credentials first, if they fail, it should ask the user for the credentials
-                                                                    #some way to save the connected device? maybe just save the device info for the ip, or save the credentials?
-
-
+    print("connection failed with common credentials")
+    manualConnect(deviceIpInput)
 
 
+def manualConnect(deviceIpInput):
+    deviceUserInput = input("enter the username of the device you want to work with: ")
+    devicePasswordInput = input("enter the password of the device you want to work with: ")
+    deviceSecretInput = input("enter the enable password of the device you want to work with: ")
+
+    print("connecting...")
+
+    connectDevice(deviceIpInput, deviceUserInput, devicePasswordInput, deviceSecretInput)
+
+
+def wizard():
+    print("welcome to kuaria wizard")
+    subnetIpInput = input("\nenter the subnet you want to work with: ")
+    scan(subnetIpInput)
+    deviceIpInput = input("enter the ip address of the device you want to work with: ")
+    autoConnect(deviceIpInput)
+
+def main():
+    print(kuariaAscii)
+    print("kuaria - simple command line tool for network automation")
+    print("\ncreated by yigit ata cavdar")
+    print('\n----------------------------------------------------')
+    wizard()
+
+main()
+
+# commands: 
+# -help 
+# -scan     
+# -connect
+#
+#
+#
+#
+#
 
 

@@ -15,7 +15,7 @@ ___/____/    \____________________/___________________\___/          /______/___
 
 Created By Yigit Ata Cavdar
 
-kuaria - simple network automation tool for networking devices
+kuaria - simple command line tool for network automation
 
 see current feature document for work flow
 
@@ -24,7 +24,7 @@ see kuaria demo for working feature set
 
 Dev Guide:
 
-pyqt5, napalm, python-nmap packages need to be installed
+napalm, python-nmap packages need to be installed
 
 > create myproject-venv directory
 
@@ -38,7 +38,7 @@ source ~/myproject-venv/bin/activate
 pip install --upgrade pip
 
 > install packages
-pip install python-nmap napalm PyQt5
+pip install python-nmap napalm
 
 > to get it working with vscode go to command pallate and select python: select interpreter
 
