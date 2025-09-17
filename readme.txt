@@ -21,6 +21,7 @@ see current feature document for work flow
 
 see kuaria demo for working feature set
 
+---------------------------------------------------------------------
 
 Dev Guide:
 
@@ -47,4 +48,38 @@ myproject-venv/bin/python
 
 > to see the packages installed
 python -m pip list
+
+---------------------------------------------------------------------
+
+Docs:
+
+kuaria - simple command line tool for network automation
+
+current feature document 15/09/2025
+
+2 main parts are required for the program to exist
+
+the scanner:
+
+- auto scans common subnets, if no hosts found, asks user to input the desired subnet.
+- retrieves active ips, port 22 states, device info, these are used when connecting with the configurer
+
+the connector:
+
+- uses info gathered by the scanner to try an auto login on discovered devices
+- retrieves detailed device info(make, model) 
+- the user can login to devices that failed the auto login, the credentials entered this way are safely stored and will be used to auto login into devices
+
+the configurer:
+
+- the basic configuration options of the program are: setting hostname, setting ip address, vlan configuration, port forwarding, static ip leasing
+- the basic configuration options for switches and routers are different
+- switches: vlan configuration, setting ports for inter-vlan routing
+- routers: outside/inside interface configuration, port forwarding, static ip leasing
+
+to do:
+
+- add argparse to the program to take commands
+- package it all into a distributable format
+
 
