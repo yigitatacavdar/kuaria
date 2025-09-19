@@ -93,4 +93,5 @@ the configurer:
 to do:
 
 - add configurer
+- common credentials are to be entered by the user, saved, and used for connection with commoncreds, user can enter like 3 commoncreds to not tire ssh
 

@@ -23,7 +23,10 @@ def getDeviceFacts(deviceIpInput):
         device = autoConnect(deviceIpInput)
         print("retrieving device info...")
         facts = device.get_facts()
-        print(f"Device: {facts['vendor']} {facts['model']}")
+        print("\n %s" % deviceIpInput)
+        print("----------------------------------------------------")
+        print(f"device: {facts['vendor']} {facts['model']}")
+        print(f"hostname: {facts['hostname']}")
         device.close()
         return facts
     except (ConnectionException, NetmikoAuthenticationException) as e:
@@ -50,7 +53,8 @@ def autoConnect(deviceIpInput):
             print("username and password found as: %s, %s" % (usernameCommon, passwordCommon))
             return device
     print("connection failed with common credentials")
-    manualConnect(deviceIpInput)
+    device = manualConnect(deviceIpInput)
+    return device
 
 
 def manualConnect(deviceIpInput):
@@ -59,13 +63,20 @@ def manualConnect(deviceIpInput):
     deviceSecretInput = input("enter the enable password of the device you want to work with: ")
 
     print("connecting...")
+
+    optional_args = dict(optional_args_base)
+    if deviceSecretInput:
+            optional_args["secret"] = deviceSecretInput 
+
+    
     driver = get_network_driver("ios")
 
     try:
-        device = driver(hostname=deviceIpInput, username=deviceUserInput, password=devicePasswordInput, optional_args=deviceSecretInput)
+        device = driver(hostname=deviceIpInput, username=deviceUserInput, password=devicePasswordInput, optional_args=optional_args)
         device.open()
     except (ConnectionException, NetmikoAuthenticationException):
         print("connection failed with entered credentials")
     else:
         print("connected to %s" %deviceIpInput)
         return device
+    manualConnect(deviceIpInput)

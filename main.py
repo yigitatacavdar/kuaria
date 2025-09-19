@@ -38,8 +38,10 @@ def wizard():
 
 def main():
     parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria - simple command line tool for network automation")
-    parser.add_argument("-scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets")
-    parser.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets")
+    group.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices")
+    parser.add_argument("-info", action="store_true", help="-connect <IP_ADDRESS> -info to get detailed device information")
     args, unknown = parser.parse_known_args()
 
     if not any(vars(args).values()):
@@ -48,7 +50,8 @@ def main():
         if args.scan:
             scanner.scan(args.scan)
         if args.connect:
-            connector.autoConnect(args.connect)
+            if args.info:
+                connector.getDeviceFacts(args.connect)
 
     
 if __name__ == "__main__":

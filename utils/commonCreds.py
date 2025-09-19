@@ -1,7 +1,7 @@
 from pathlib import Path
 
 def loadCommonCreds(filename="commonCreds.txt"):
-    base_dir = Path(__file__).resolve().parent.parent   # utils/ -> kuaria/
+    base_dir = Path(__file__).resolve().parent.parent
     file_path = base_dir / "data" / filename
 
     creds = []
