@@ -42,6 +42,9 @@ def main():
     group.add_argument("-scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets")
     group.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices")
     parser.add_argument("-info", action="store_true", help="-connect <IP_ADDRESS> -info to get detailed device information")
+    group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices")
+    parser.add_argument("-hostname", metavar="<hostname>", help="-configure <IP_ADDRESS> -hostname <hostname> to change the hostname of the device")
+    
     args, unknown = parser.parse_known_args()
 
     if not any(vars(args).values()):
@@ -52,7 +55,9 @@ def main():
         if args.connect:
             if args.info:
                 connector.getDeviceFacts(args.connect)
-
+        if args.configure:
+            if args.hostname:
+                configurer.changeHostname(args.configure, args.hostname)
     
 if __name__ == "__main__":
     main()
