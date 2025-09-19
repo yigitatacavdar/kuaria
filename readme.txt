@@ -57,18 +57,25 @@ kuaria - simple command line tool for network automation
 
 current feature document 15/09/2025
 
-2 main parts are required for the program to exist
+3 main parts are required for the program to exist
 
 the scanner:
 
 - auto scans common subnets, if no hosts found, asks user to input the desired subnet.
 - retrieves active ips, port 22 states, device info, these are used when connecting with the configurer
 
+- usage: -scan <IP_ADDRESS>
+
 the connector:
 
 - uses info gathered by the scanner to try an auto login on discovered devices
 - retrieves detailed device info(make, model) 
 - the user can login to devices that failed the auto login, the credentials entered this way are safely stored and will be used to auto login into devices
+
+- usage: -connect <IP_ADDRESS>
+         -connect <IP_ADDRESS> -info
+         -connect <IP_ADDRESS> -config
+
 
 the configurer:
 
@@ -77,9 +84,13 @@ the configurer:
 - switches: vlan configuration, setting ports for inter-vlan routing
 - routers: outside/inside interface configuration, port forwarding, static ip leasing
 
+- usage: -configure <IP_ADDRESS> -hostname "newhostname"
+         -configure <IP_ADDRESS> -changeip "<IP_ADDRESS>"   <- works for switches   ---| some way to
+         -configure <IP_ADDRESS> -changeip "<IP_ADDRESS>" -interface "GE0/1"   <- works for routers---| differentiate?
+
+
+
 to do:
 
-- add argparse to the program to take commands
-- package it all into a distributable format
-
+- add configurer
 
