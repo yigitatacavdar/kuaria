@@ -92,9 +92,7 @@ the configurer:
 
 to do:
 
-- common credentials are to be entered by the user, saved, and used for connection with commoncreds, user can enter like 3 commoncreds to not tire ssh
-- add running config and other info to connector
+- common credentials are to be entered by the user, saved, and used for connection with commoncreds, user can enter like 3 commoncreds to not tire ssh(for laterrrr)
+- add other info to connector
 - add hostname, ip and etc to configurer
-- make it so that just -connect just -configure cannot be put it without other commands
-- devices need to enbale scp thingy
 

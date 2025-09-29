@@ -18,20 +18,23 @@ optional_args_base = {
 }
 
 def getDeviceFacts(deviceIpInput):
-    
-    try:
-        device = autoConnect(deviceIpInput)
-        print("retrieving device info...")
-        facts = device.get_facts()
-        print("\n %s" % deviceIpInput)
-        print("----------------------------------------------------")
-        print(f"device: {facts['vendor']} {facts['model']}")
-        print(f"hostname: {facts['hostname']}")
-        device.close()
-        return facts
-    except (ConnectionException, NetmikoAuthenticationException) as e:
-        print("connection failed!")
-        autoConnect()
+    device = autoConnect(deviceIpInput)
+    print("retrieving device info...")
+    facts = device.get_facts()
+    print("\n %s" % deviceIpInput)
+    print("----------------------------------------------------")
+    print(f"device: {facts['vendor']} {facts['model']}")
+    print(f"hostname: {facts['hostname']}")
+    device.close()
+
+def getConfig(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving running configuration...")
+    config = device.get_config()
+    running_config = config.get("running", "")
+    for line in running_config.splitlines():
+        print(line)
+    device.close()
 
 def autoConnect(deviceIpInput):
     print("trying to connect with common credentials...")
@@ -68,15 +71,15 @@ def manualConnect(deviceIpInput):
     if deviceSecretInput:
             optional_args["secret"] = deviceSecretInput 
 
-    
     driver = get_network_driver("ios")
+    device = driver(hostname=deviceIpInput, username=deviceUserInput, password=devicePasswordInput, optional_args=optional_args)
 
     try:
-        device = driver(hostname=deviceIpInput, username=deviceUserInput, password=devicePasswordInput, optional_args=optional_args)
         device.open()
-    except (ConnectionException, NetmikoAuthenticationException):
-        print("connection failed with entered credentials")
-    else:
         print("connected to %s" %deviceIpInput)
         return device
-    manualConnect(deviceIpInput)
+    except (ConnectionException, NetmikoAuthenticationException):
+        print("connection failed with entered credentials")
+        return manualConnect(deviceIpInput)
+
+    

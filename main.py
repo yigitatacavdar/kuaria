@@ -27,6 +27,8 @@ def wizard():
     print("\ncreated by yigit ata cavdar")
     print('\n----------------------------------------------------')
     print("Options:")
+    print("ssh and scp server must be enabled on devices (ip scp server enable)")
+    print("user privilege should be 15 (username admin privilege 15 secret <password>) or (username admin privilege 15 password <password>)")
     print("-scan <IP_ADDRESS> to scan for devices or subnets")
     print("-connect <IP_ADDRESS> to test connection to devices")
     print('\n----------------------------------------------------')
@@ -42,6 +44,7 @@ def main():
     group.add_argument("-scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets")
     group.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices")
     parser.add_argument("-info", action="store_true", help="-connect <IP_ADDRESS> -info to get detailed device information")
+    parser.add_argument("-config", action="store_true", help="-connect <IP_ADDRESS> -config to get running configuration")
     group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices")
     parser.add_argument("-hostname", metavar="<hostname>", help="-configure <IP_ADDRESS> -hostname <hostname> to change the hostname of the device")
     
@@ -55,6 +58,8 @@ def main():
         if args.connect:
             if args.info:
                 connector.getDeviceFacts(args.connect)
+            if args.config:
+                connector.getConfig(args.connect)
         if args.configure:
             if args.hostname:
                 configurer.changeHostname(args.configure, args.hostname)
