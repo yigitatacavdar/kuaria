@@ -3,6 +3,8 @@ from utils.commonCreds import loadCommonCreds
 from napalm import get_network_driver
 from napalm.base.exceptions import ConnectionException
 from netmiko import NetmikoAuthenticationException
+from tabulate import tabulate
+import pprint
 
 optional_args_base = {
     "allow_agent": False,
@@ -21,7 +23,7 @@ def getDeviceFacts(deviceIpInput):
     device = autoConnect(deviceIpInput)
     print("retrieving device info...")
     facts = device.get_facts()
-    print("\n %s" % deviceIpInput)
+    print(deviceIpInput)
     print("----------------------------------------------------")
     print(f"device: {facts['vendor']} {facts['model']}")
     print(f"hostname: {facts['hostname']}")
@@ -34,6 +36,66 @@ def getConfig(deviceIpInput):
     running_config = config.get("running", "")
     for line in running_config.splitlines():
         print(line)
+    device.close()
+
+def getInterfaces(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving interfaces...")
+    interfaces = device.get_interfaces()
+
+    table = []
+    for intf, details in interfaces.items():
+        table.append([
+            intf,
+            details["is_up"],
+            details["is_enabled"],
+            details["speed"],
+            details["mac_address"]
+        ])
+    print(tabulate(table, headers=["interface", "up", "enabled", "speed", "MAC"]))
+
+    device.close()
+
+def getVlans(deviceInput):
+    device = autoConnect(deviceInput)
+    print("retrieving vlans..")
+    vlans = device.get_vlans()
+
+    table = []
+    for vlan, details in vlans.items():
+        if details["interfaces"]:
+            interfaces_str = "\n".join(details["interfaces"])
+        else:
+            interfaces_str = "[]"
+
+        table.append([
+            vlan,
+            details["name"],
+            interfaces_str
+            ])
+    print(tabulate(table, headers=["vlan", "name", "interfaces"]))
+
+    device.close()
+
+def getMacTable(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving mac table...")
+    macTable = device.get_mac_address_table()
+    
+    table = []
+    for entry in macTable:
+        interface = entry.get("interface")
+        mac = entry.get("mac")
+        vlan = entry.get("vlan")
+
+        if interface:
+            table.append([
+                mac,
+                interface,
+                vlan
+                ])
+    print(tabulate(table, headers=["MAC", "interface", "vlan"]))
+
     device.close()
 
 def autoConnect(deviceIpInput):

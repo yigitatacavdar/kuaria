@@ -41,10 +41,16 @@ def wizard():
 def main():
     parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria - simple command line tool for network automation")
     group = parser.add_mutually_exclusive_group(required=True)
+
     group.add_argument("-scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets")
+
     group.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices")
     parser.add_argument("-info", action="store_true", help="-connect <IP_ADDRESS> -info to get detailed device information")
     parser.add_argument("-config", action="store_true", help="-connect <IP_ADDRESS> -config to get running configuration")
+    parser.add_argument("-int", action="store_true", help="-connect <IP_ADDRESS> -int to get interfaces")
+    parser.add_argument("-vlan", action="store_true", help="-connect <IP_ADDRESS> -vlan to get vlans")
+    parser.add_argument("-mac", action="store_true", help="-connect <IP_ADDRESS> -mac to get mac table")
+
     group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices")
     parser.add_argument("-hostname", metavar="<hostname>", help="-configure <IP_ADDRESS> -hostname <hostname> to change the hostname of the device")
     
@@ -60,6 +66,12 @@ def main():
                 connector.getDeviceFacts(args.connect)
             if args.config:
                 connector.getConfig(args.connect)
+            if args.int:
+                connector.getInterfaces(args.connect)
+            if args.vlan:
+                connector.getVlans(args.connect)
+            if args.mac:
+                connector.getMacTable(args.connect)
         if args.configure:
             if args.hostname:
                 configurer.changeHostname(args.configure, args.hostname)
