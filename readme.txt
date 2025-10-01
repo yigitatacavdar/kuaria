@@ -55,7 +55,7 @@ Docs:
 
 kuaria - simple command line tool for network automation
 
-current feature document 15/09/2025
+current feature document 01/10/2025
 
 3 main parts are required for the program to exist
 
@@ -93,8 +93,6 @@ the configurer:
 to do:
 
 - common credentials are to be entered by the user, saved, and used for connection with commoncreds, user can enter like 3 commoncreds to not tire ssh(for laterrrr)
-- add other info to connector
 - add hostname, ip and etc to configurer
-- interaces info add
 
 

@@ -98,6 +98,27 @@ def getMacTable(deviceIpInput):
 
     device.close()
 
+def getArpTable(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving arp table...")
+    arpTable = device.get_arp_table()
+    
+    table = []
+    for entry in arpTable:
+        interface = entry.get("interface")
+        mac = entry.get("mac")
+        ip = entry.get("ip")
+
+        if interface:
+            table.append([
+                mac,
+                interface,
+                ip
+                ])
+    print(tabulate(table, headers=["MAC", "interface", "ip"]))
+
+    device.close()
+
 def autoConnect(deviceIpInput):
     print("trying to connect with common credentials...")
 

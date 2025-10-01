@@ -50,6 +50,7 @@ def main():
     parser.add_argument("-int", action="store_true", help="-connect <IP_ADDRESS> -int to get interfaces")
     parser.add_argument("-vlan", action="store_true", help="-connect <IP_ADDRESS> -vlan to get vlans")
     parser.add_argument("-mac", action="store_true", help="-connect <IP_ADDRESS> -mac to get mac table")
+    parser.add_argument("-arp", action="store_true", help="-connect <IP_ADDRESS> -arp to get arp table")
 
     group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices")
     parser.add_argument("-hostname", metavar="<hostname>", help="-configure <IP_ADDRESS> -hostname <hostname> to change the hostname of the device")
@@ -72,6 +73,9 @@ def main():
                 connector.getVlans(args.connect)
             if args.mac:
                 connector.getMacTable(args.connect)
+            if args.arp:
+                connector.getArpTable(args.connect)
+
         if args.configure:
             if args.hostname:
                 configurer.changeHostname(args.configure, args.hostname)
