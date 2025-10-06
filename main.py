@@ -47,13 +47,21 @@ def main():
     group.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices")
     parser.add_argument("-info", action="store_true", help="-connect <IP_ADDRESS> -info to get detailed device information")
     parser.add_argument("-config", action="store_true", help="-connect <IP_ADDRESS> -config to get running configuration")
-    parser.add_argument("-int", action="store_true", help="-connect <IP_ADDRESS> -int to get interfaces")
-    parser.add_argument("-vlan", action="store_true", help="-connect <IP_ADDRESS> -vlan to get vlans")
+    parser.add_argument("-interface", action="store_true", help="-connect <IP_ADDRESS> -interface to get interfaces")
+    parser.add_argument("-vlans", action="store_true", help="-connect <IP_ADDRESS> -vlan to get vlans")
     parser.add_argument("-mac", action="store_true", help="-connect <IP_ADDRESS> -mac to get mac table")
     parser.add_argument("-arp", action="store_true", help="-connect <IP_ADDRESS> -arp to get arp table")
 
     group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices")
     parser.add_argument("-hostname", metavar="<hostname>", help="-configure <IP_ADDRESS> -hostname <hostname> to change the hostname of the device")
+    parser.add_argument("-vlan", metavar="<vlan>", help="-configure <IP_ADDRESS -vlan <vlan> to create a vlan")
+    parser.add_argument("-name", metavar="<name>", help="-name to add a name to vlans and other configurations")
+    parser.add_argument("-delete", action="store_true", help="-configure 'configuration' -delete to delete the configuration")
+    parser.add_argument("-int", metavar="<interface>", help="-int <interface> to configure interface")
+    parser.add_argument("-open", action="store_true", help="-open to open interface (no shutdown)")
+    parser.add_argument("-close", action="store_true", help="-close to close interface (shutdown)")
+
+
     
     args, unknown = parser.parse_known_args()
 
@@ -67,9 +75,9 @@ def main():
                 connector.getDeviceFacts(args.connect)
             if args.config:
                 connector.getConfig(args.connect)
-            if args.int:
+            if args.interface:
                 connector.getInterfaces(args.connect)
-            if args.vlan:
+            if args.vlans:
                 connector.getVlans(args.connect)
             if args.mac:
                 connector.getMacTable(args.connect)
@@ -79,6 +87,15 @@ def main():
         if args.configure:
             if args.hostname:
                 configurer.changeHostname(args.configure, args.hostname)
+            if args.vlan:
+                name = args.name if args.name else ""
+                delete = args.delete if args.delete else False
+                configurer.changeVlan(args.configure, args.vlan, name, delete)
+            if args.int:
+                if args.open:
+                    configurer.shutdown(args.configure, args.int, False)
+                if args.close:
+                    configurer.shutdown(args.configure, args.int, True)
     
 if __name__ == "__main__":
     main()

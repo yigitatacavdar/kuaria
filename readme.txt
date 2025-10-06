@@ -19,8 +19,6 @@ kuaria - simple command line tool for network automation
 
 see current feature document for work flow
 
-see kuaria demo for working feature set
-
 ---------------------------------------------------------------------
 
 Dev Guide:
@@ -39,7 +37,7 @@ source ~/myproject-venv/bin/activate
 pip install --upgrade pip
 
 > install packages
-pip install python-nmap napalm
+pip install python-nmap napalm tabulate
 
 > to get it working with vscode go to command pallate and select python: select interpreter
 
@@ -55,7 +53,7 @@ Docs:
 
 kuaria - simple command line tool for network automation
 
-current feature document 01/10/2025
+current feature document 06/10/2025
 
 3 main parts are required for the program to exist
 

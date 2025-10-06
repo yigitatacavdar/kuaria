@@ -26,4 +26,50 @@ def changeHostname(deviceIpInput, hostnameInput):
     else:
         print("canceled configuration")
 
+def changeVlan(deviceIpInput, vlanInput, nameInput, deleteInput=False):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
 
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        if deleteInput:
+            print(f"removing vlan {vlanInput}")
+            conf = f"no vlan {vlanInput}"
+        else:
+            print(f"adding vlan {vlanInput}")
+            conf = f"vlan {vlanInput}\n name {nameInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def shutdown(deviceIpInput,intInput, shutdownInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        if shutdownInput:
+            print(f"closing interface {intInput}")
+            conf = f"int {intInput}\n shutdown"
+        else:
+            print(f"opening interface {intInput}")
+            conf = f"int {intInput}\n no shutdown"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
