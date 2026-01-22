@@ -4,7 +4,9 @@ from napalm import get_network_driver
 from napalm.base.exceptions import ConnectionException
 from netmiko import NetmikoAuthenticationException
 from tabulate import tabulate
+from ntc_templates.parse import parse_output
 import pprint
+import re
 
 optional_args_base = {
     "allow_agent": False,
@@ -22,11 +24,22 @@ optional_args_base = {
 def getDeviceFacts(deviceIpInput):
     device = autoConnect(deviceIpInput)
     print("retrieving device info...")
+
     facts = device.get_facts()
-    print(deviceIpInput)
-    print("----------------------------------------------------")
-    print(f"device: {facts['vendor']} {facts['model']}")
-    print(f"hostname: {facts['hostname']}")
+
+    table = []
+
+    for key, value in facts.items():
+        if key == "interface_list":
+            continue
+
+        table.append([key, value])
+
+    print(tabulate(
+        table,
+        headers=["Fact", "Value"]
+    ))
+
     device.close()
 
 def getConfig(deviceIpInput):
@@ -36,6 +49,65 @@ def getConfig(deviceIpInput):
     running_config = config.get("running", "")
     for line in running_config.splitlines():
         print(line)
+    device.close()
+
+def getEnvironment(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving environment information...")
+
+    env = device.get_environment()
+
+    table = []
+
+    cpu = env.get("cpu", {})
+    for cpu_id, cpu_data in cpu.items():
+        table.append([
+            "CPU",
+            cpu_id,
+            cpu_data.get("usage"),
+            "%"
+        ])
+
+    memory = env.get("memory", {})
+    table.append([
+        "Memory",
+        "system",
+        memory.get("used_ram"),
+        "bytes"
+    ])
+
+    temperature = env.get("temperature", {})
+    for sensor, temp_data in temperature.items():
+        table.append([
+            "Temperature",
+            sensor,
+            temp_data.get("temperature"),
+            "C"
+        ])
+
+    fans = env.get("fans", {})
+    for fan, fan_data in fans.items():
+        table.append([
+            "Fan",
+            fan,
+            "OK" if fan_data.get("status") else "FAIL",
+            ""
+        ])
+
+    power = env.get("power", {})
+    for psu, psu_data in power.items():
+        table.append([
+            "Power",
+            psu,
+            "OK" if psu_data.get("status") else "FAIL",
+            ""
+        ])
+
+    print(tabulate(
+        table,
+        headers=["Component", "Name", "Value", "Unit"]
+    ))
+
     device.close()
 
 def getInterfaces(deviceIpInput):
@@ -58,7 +130,7 @@ def getInterfaces(deviceIpInput):
 
 def getVlans(deviceInput):
     device = autoConnect(deviceInput)
-    print("retrieving vlans..")
+    print("retrieving vlans...")
     vlans = device.get_vlans()
 
     table = []
@@ -98,6 +170,49 @@ def getMacTable(deviceIpInput):
 
     device.close()
 
+def getSwitchports(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving switchport modes...")
+
+    cmd = "show interfaces switchport"
+    raw_output = device.cli([cmd])[cmd]
+
+    parsed = parse_output(
+        platform="cisco_ios",
+        command="show interfaces switchport",
+        data=raw_output
+    )
+
+    table = []
+
+    for entry in parsed:
+        interface = entry.get("interface")
+        admin_mode = entry.get("admin_mode")
+        oper_mode = entry.get("oper_mode")
+        access_vlan = entry.get("access_vlan")
+        native_vlan = entry.get("native_vlan")
+
+        table.append([
+            interface,
+            admin_mode,
+            oper_mode,
+            access_vlan,
+            native_vlan
+        ])
+
+    print(tabulate(
+        table,
+        headers=[
+            "Interface",
+            "Admin Mode",
+            "Oper Mode",
+            "Access VLAN",
+            "Native VLAN"
+        ]
+    ))
+
+    device.close()
+
 def getArpTable(deviceIpInput):
     device = autoConnect(deviceIpInput)
     print("retrieving arp table...")
@@ -116,6 +231,70 @@ def getArpTable(deviceIpInput):
                 ip
                 ])
     print(tabulate(table, headers=["MAC", "interface", "ip"]))
+
+    device.close()
+
+def getLldp(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving lldp neighbors...")
+
+    lldp = device.get_lldp_neighbors()
+
+    table = []
+
+    for local_interface, neighbors in lldp.items():
+        for neighbor in neighbors:
+            table.append([
+                local_interface,
+                neighbor.get("hostname"),
+                neighbor.get("port")
+            ])
+
+    print(tabulate(
+        table,
+        headers=["Local Interface", "Neighbor Hostname", "Neighbor Interface"]
+    ))
+
+    device.close()
+
+def getRoutingTable(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    print("retrieving routing table...")
+
+    output = device.cli(["show ip route"])
+    lines = output["show ip route"].splitlines()
+
+    table = []
+
+    for line in lines:
+        line = line.strip()
+
+        if line.startswith("S*"):
+            match = re.search(r"(0\.0\.0\.0/0).*via (\d+\.\d+\.\d+\.\d+)", line)
+            if match:
+                table.append([
+                    match.group(1),
+                    "static",
+                    match.group(2),
+                    "",
+                    "1"
+                ])
+
+        elif line.startswith("C "):
+            match = re.search(r"(\d+\.\d+\.\d+\.\d+/\d+).*connected, (\S+)", line)
+            if match:
+                table.append([
+                    match.group(1),
+                    "connected",
+                    "",
+                    match.group(2),
+                    "0"
+                ])
+
+    print(tabulate(
+        table,
+        headers=["Destination", "Protocol", "Next Hop", "Interface", "AD"]
+    ))
 
     device.close()
 

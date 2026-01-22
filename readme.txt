@@ -23,7 +23,7 @@ see current feature document for work flow
 
 Dev Guide:
 
-napalm, python-nmap packages need to be installed
+napalm, python-nmap ntc-templates textfsm tabulate packages need to be installed
 
 > create myproject-venv directory
 
