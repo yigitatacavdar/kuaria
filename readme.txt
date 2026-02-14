@@ -91,6 +91,25 @@ the configurer:
 to do:
 
 - common credentials are to be entered by the user, saved, and used for connection with commoncreds, user can enter like 3 commoncreds to not tire ssh(for laterrrr)
-- add hostname, ip and etc to configurer
 
+- a wizard that finds your topology and sets a general config automatically (hard)
 
+- locally saves device creds of machines with speific ip
+
+- add svi for l3 switch vlan
+- encapsulation for router vlan
+- add interface to vlan for switch
+- add dhcp for router or l3 switch
+- interface trunk access all that
+- port forwarding
+- acl whatever
+- static route?
+
+- to create inter vlan routing
+    - on router on a stick
+        -create vlan on l2 switch add interfaces to vlan
+        -create interface for vlan add encapsulation and ip
+    - on l3 switch networks (svi)
+        -create vlan on l3 switch
+        -add ip address
+        -ip routing

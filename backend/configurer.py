@@ -10,23 +10,45 @@ def areYouSureInput():
         print("please enter yes or no (Y/n)")
         return areYouSureInput()
     
+def delete(deviceIpInput, confInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        print(f"deleting configuration {confInput}")
+        conf = f"no {confInput}"
+        print("Configuration deleted successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+### HOSTNAME CONFIGURATION ###
+    
 def changeHostname(deviceIpInput, hostnameInput):
     device = autoConnect(deviceIpInput)
     sureInput = areYouSureInput()
-    if sureInput:
-        try:
-            device.load_merge_candidate(config=f"hostname {hostnameInput}")
-            device.commit_config()
-            print("configuration saved successfully")
-        except Exception as e:
-            print("error, rolling back:", e)
-            device.rollback()
-        finally:
-            device.close()
-    else:
-        print("canceled configuration")
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        device.load_merge_candidate(config=f"hostname {hostnameInput}")
+        device.commit_config()
+        print("configuration saved successfully")
+    except Exception as e:
+        print("error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
 
-def changeVlan(deviceIpInput, vlanInput, nameInput, deleteInput=False):
+### VLAN CONFIGURATION ###
+
+def addVlan(deviceIpInput, vlanInput):
     device = autoConnect(deviceIpInput)
     sureInput = areYouSureInput()
 
@@ -35,12 +57,8 @@ def changeVlan(deviceIpInput, vlanInput, nameInput, deleteInput=False):
         device.close()
         return
     try:
-        if deleteInput:
-            print(f"removing vlan {vlanInput}")
-            conf = f"no vlan {vlanInput}"
-        else:
-            print(f"adding vlan {vlanInput}")
-            conf = f"vlan {vlanInput}\n name {nameInput}"
+        print(f"adding vlan {vlanInput}")
+        conf = f"vlan {vlanInput}"
         device.load_merge_candidate(config=conf)
         device.commit_config()
         print("Configuration saved successfully")
@@ -50,7 +68,29 @@ def changeVlan(deviceIpInput, vlanInput, nameInput, deleteInput=False):
     finally:
         device.close()
 
-def shutdown(deviceIpInput,intInput, shutdownInput):
+def nameVlan(deviceIpInput, vlanInput, nameInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        print(f"changing vlan name to {nameInput}")
+        conf = f"vlan {vlanInput}\n name {nameInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+### INTERFACE CONFIGURATION ###
+
+def intShutdown(deviceIpInput, intInput, shutdownInput):
     device = autoConnect(deviceIpInput)
     sureInput = areYouSureInput()
 
@@ -65,6 +105,25 @@ def shutdown(deviceIpInput,intInput, shutdownInput):
         else:
             print(f"opening interface {intInput}")
             conf = f"int {intInput}\n no shutdown"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def intIp(deviceIpInput, intInput, ipInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {intInput}\n {ipInput}"
         device.load_merge_candidate(config=conf)
         device.commit_config()
         print("Configuration saved successfully")

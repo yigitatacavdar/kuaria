@@ -40,31 +40,35 @@ def wizard():
 
 def main():
     parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria - simple command line tool for network automation")
+ 
     group = parser.add_mutually_exclusive_group(required=True)
 
     group.add_argument("-scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets")
 
-    group.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices")
-    parser.add_argument("-info", action="store_true", help="-connect <IP_ADDRESS> -info to get detailed device information")
-    parser.add_argument("-env", action="store_true", help="-connect <IP_ADDRESS> -env to get device environment information")
-    parser.add_argument("-config", action="store_true", help="-connect <IP_ADDRESS> -config to get running configuration")
-    parser.add_argument("-interface", action="store_true", help="-connect <IP_ADDRESS> -interface to get interfaces")
-    parser.add_argument("-vlans", action="store_true", help="-connect <IP_ADDRESS> -vlans to get vlans")
-    parser.add_argument("-mac", action="store_true", help="-connect <IP_ADDRESS> -mac to get mac table")
-    parser.add_argument("-arp", action="store_true", help="-connect <IP_ADDRESS> -arp to get arp table")
-    parser.add_argument("-switchports", action="store_true", help="-connect <IP_ADDRESS> -switchport to get switchports")
-    parser.add_argument("-route", action="store_true", help="-connect <IP_ADDRESS> -route to get routing table")
-    parser.add_argument("-lldp", action="store_true", help="-connect <IP_ADDRESS> -lldp to get lldp neighbors")
+    group.add_argument("-connect", metavar="<IP_ADDRESS>", help="test connection to devices, first must -connect <IP_ADDRESS> to use other commands")
+    parser.add_argument("-info", action="store_true", help="-info to get detailed device information")
+    parser.add_argument("-env", action="store_true", help="-env to get device environment information")
+    parser.add_argument("-config", action="store_true", help="-config to get running configuration")
+    parser.add_argument("-interface", action="store_true", help="-interface to get interfaces")
+    parser.add_argument("-vlans", action="store_true", help="-vlans to get vlans")
+    parser.add_argument("-mac", action="store_true", help="-mac to get mac table")
+    parser.add_argument("-arp", action="store_true", help="-arp to get arp table")
+    parser.add_argument("-switchports", action="store_true", help="-switchport to get switchports")
+    parser.add_argument("-route", action="store_true", help="-route to get routing table")
+    parser.add_argument("-lldp", action="store_true", help="-lldp to get lldp neighbors")
 
 
-    group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices")
-    parser.add_argument("-hostname", metavar="<hostname>", help="-configure <IP_ADDRESS> -hostname <hostname> to change the hostname of the device")
-    parser.add_argument("-vlan", metavar="<vlan>", help="-configure <IP_ADDRESS -vlan <vlan> to create a vlan")
+    group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices, first must -configure <IP_ADDRESS> to use other commands")
+    parser.add_argument("-hostname", metavar="<hostname>", help="-hostname <hostname> to change the hostname of the device")
+    parser.add_argument("-delete", action="<configuration>", help="-delete <configuration> to delete the configuration")
+
+    parser.add_argument("-vlan", metavar="<vlan>", help="-vlan <vlan> to create a vlan")
     parser.add_argument("-name", metavar="<name>", help="-name to add a name to vlans and other configurations")
-    parser.add_argument("-delete", action="store_true", help="-configure 'configuration' -delete to delete the configuration")
+
     parser.add_argument("-int", metavar="<interface>", help="-int <interface> to configure interfaces")
     parser.add_argument("-open", action="store_true", help="-open to open interface (no shutdown)")
     parser.add_argument("-close", action="store_true", help="-close to close interface (shutdown)")
+    parser.add_argument("-ip", metavar="<ip>", help="-ip to add ip address to interfaces '<ip> <subnet>' or 'dhcp'")
 
 
     
@@ -100,15 +104,23 @@ def main():
         if args.configure:
             if args.hostname:
                 configurer.changeHostname(args.configure, args.hostname)
+
+            if args.delete:
+                configurer.delete(args.confiure, args.delete)
+
             if args.vlan:
-                name = args.name if args.name else ""
-                delete = args.delete if args.delete else False
-                configurer.changeVlan(args.configure, args.vlan, name, delete)
+                configurer.addVlan(args.configure, args.vlan)
+                if args.name:
+                    configurer.nameVlan(args.configure, args.vlan, args.name)
+
             if args.int:
                 if args.open:
-                    configurer.shutdown(args.configure, args.int, False)
+                    configurer.intShutdown(args.configure, args.int, False)
                 if args.close:
-                    configurer.shutdown(args.configure, args.int, True)
+                    configurer.intShutdown(args.configure, args.int, True)
+                if args.ip:
+                    configurer.intIp(args.configure, args.int, args.ip)
+
     
 if __name__ == "__main__":
     main()
