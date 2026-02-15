@@ -123,7 +123,7 @@ def intIp(deviceIpInput, intInput, ipInput):
         device.close()
         return
     try:
-        conf = f"int {intInput}\n {ipInput}"
+        conf = f"int {intInput}\n ip address {ipInput}"
         device.load_merge_candidate(config=conf)
         device.commit_config()
         print("Configuration saved successfully")
@@ -132,3 +132,62 @@ def intIp(deviceIpInput, intInput, ipInput):
         device.rollback()
     finally:
         device.close()
+
+def dhcpPool(deviceIpInput, nameInput, networkInput, defaultRouterInput, dnsServerInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"ip dhcp pool {nameInput}\n network {networkInput}\n default-router {defaultRouterInput}\n dns-server {dnsServerInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def dhcpPoolStatic(deviceIpInput, nameInput, hostInput, clientIdentifierInput, defaultRouterInput, dnsServerInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"ip dhcp pool {nameInput}\n host {hostInput}\n client-identifier {clientIdentifierInput}\n default-router {defaultRouterInput}\n dns-server {dnsServerInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def dhcpExcluded(deviceIpInput, excludedIp):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"ip dhcp excluded-address {excludedIp}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+

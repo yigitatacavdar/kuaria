@@ -96,17 +96,18 @@ to do:
 
 - locally saves device creds of machines with specific ip
 
+- one problem. making sure creating vlans dont cut the internet connection while the configuration is being done. 
+
 - add svi for l3 switch vlan
 - encapsulation for router vlan
 - add interface to vlan for switch
-- add dhcp pool for router or l3 switch
 - interface trunk access all that
 
 - port forwarding
 - acl whatever
 - static route?
 
-- one problem. making sure creating vlans dont cut the internet connection while the configuration is being done. 
+interface config(full config with vlans, nats, whatever), nat, acl ### 3 things to do ###
 
 - to create inter vlan routing
     - on router on a stick
