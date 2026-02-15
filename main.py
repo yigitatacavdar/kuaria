@@ -39,7 +39,13 @@ def wizard():
     connector.autoConnect(deviceIpInput)
 
 def main():
-    parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria - simple command line tool for network automation")
+    parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria - simple command line tool for network automation", epilog="""
+Warnings:
+  ssh and scp server must be enabled on devices (ip scp server enable)
+  user privilege should be 15 (username admin privilege 15 secret <password>) or (username admin privilege 15 password <password>)
+  do not modify the management session interface
+""",
+    formatter_class=argparse.RawDescriptionHelpFormatter)
  
     group = parser.add_mutually_exclusive_group(required=True)
 
@@ -60,7 +66,7 @@ def main():
 
     group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices, first must -configure <IP_ADDRESS> to use other commands")
     parser.add_argument("-hostname", metavar="<hostname>", help="-hostname <hostname> to change the hostname of the device")
-    parser.add_argument("-delete", action="<configuration>", help="-delete <configuration> to delete the configuration")
+    parser.add_argument("-delete", metavar="<configuration>", help="-delete <configuration> to delete the configuration")
 
     parser.add_argument("-vlan", metavar="<vlan>", help="-vlan <vlan> to create a vlan")
     parser.add_argument("-name", metavar="<name>", help="-name to add a name to vlans and other configurations")

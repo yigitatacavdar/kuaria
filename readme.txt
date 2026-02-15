@@ -94,16 +94,19 @@ to do:
 
 - a wizard that finds your topology and sets a general config automatically (hard)
 
-- locally saves device creds of machines with speific ip
+- locally saves device creds of machines with specific ip
 
 - add svi for l3 switch vlan
 - encapsulation for router vlan
 - add interface to vlan for switch
-- add dhcp for router or l3 switch
+- add dhcp pool for router or l3 switch
 - interface trunk access all that
+
 - port forwarding
 - acl whatever
 - static route?
+
+- one problem. making sure creating vlans dont cut the internet connection while the configuration is being done. 
 
 - to create inter vlan routing
     - on router on a stick
@@ -113,3 +116,10 @@ to do:
         -create vlan on l3 switch
         -add ip address
         -ip routing
+
+- features needed for inter vlan
+    - add interface to vlan
+    - add encapsulation and ip to vlan for router
+    - ip routing for l3 switch
+    - add ip address to vlan l3 switch
+    - access trunk port whatever
