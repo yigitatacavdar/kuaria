@@ -133,6 +133,28 @@ def intIp(deviceIpInput, intInput, ipInput):
     finally:
         device.close()
 
+def deleteInt(deviceIpInput, intInput, deleteInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {intInput}\n no {deleteInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+
+### DHCP CONFIGURATION ###
+
 def dhcpPool(deviceIpInput, nameInput, networkInput, defaultRouterInput, dnsServerInput):
     device = autoConnect(deviceIpInput)
     sureInput = areYouSureInput()
@@ -181,6 +203,27 @@ def dhcpExcluded(deviceIpInput, excludedIp):
         return
     try:
         conf = f"ip dhcp excluded-address {excludedIp}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+### ROUTING ###
+
+def routing(deviceIpInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"ip routing"
         device.load_merge_candidate(config=conf)
         device.commit_config()
         print("Configuration saved successfully")

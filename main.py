@@ -93,6 +93,8 @@ Warnings:
     parser.add_argument("-clientid", metavar="<mac>", help="add client identifier to dhcp pool")
     parser.add_argument("-host", metavar="<ip> <subnet>", help="add host ip to dhcp pool")
 
+    parser.add_argument("-routing", action="store_true", help="enable ip routing [SUB COMMAND]")
+
 
     
     args, unknown = parser.parse_known_args()
@@ -143,6 +145,8 @@ Warnings:
                     configurer.intShutdown(args.configure, args.int, True)
                 if args.ip:
                     configurer.intIp(args.configure, args.int, args.ip)
+                if args.delete:
+                    configurer.deleteInt(args.configure, args.int, args.delete)
 
             if args.dhcp:
                 if args.name:
@@ -161,6 +165,11 @@ Warnings:
             if args.dhcp:
                 if args.exclude:
                     configurer.dhcpExcluded(args.configure, args.exclude)
+
+            if args.routing:
+                configurer.routing(args.configure)
+
+
 
     
 if __name__ == "__main__":

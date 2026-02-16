@@ -98,6 +98,8 @@ to do:
 
 - one problem. making sure creating vlans dont cut the internet connection while the configuration is being done. 
 
+- delete for subcommands
+
 - add svi for l3 switch vlan
 - encapsulation for router vlan
 - add interface to vlan for switch
@@ -119,8 +121,15 @@ interface config(full config with vlans, nats, whatever), nat, acl ### 3 things 
         -ip routing
 
 - features needed for inter vlan
-    - add interface to vlan
-    - add encapsulation and ip to vlan for router
-    - ip routing for l3 switch
-    - add ip address to vlan l3 switch
-    - access trunk port whatever
+
+    - sub interface on router -subint [SUB COMMAND]
+    - add encapsulation and ip to vlan for router -subint -encap 
+
+    - interface -int -switchport
+    - access trunk port whatever -int -access -trunk
+    - add vlan to interface -int -vlan
+    
+
+
+    switchport mode access
+    switchport access vlan 10
