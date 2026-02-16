@@ -95,6 +95,9 @@ Warnings:
 
     parser.add_argument("-routing", action="store_true", help="enable ip routing [SUB COMMAND]")
 
+    parser.add_argument("-subint", metavar="<sub interface>", help="add sub interface [SUB COMMAND]")
+    parser.add_argument("-encap", metavar="<vlan number>", help="use with -subint to add encapsulation")
+
 
     
     args, unknown = parser.parse_known_args()
@@ -149,25 +152,67 @@ Warnings:
                     configurer.deleteInt(args.configure, args.int, args.delete)
 
             if args.dhcp:
-                if args.name:
-                    if args.network:
-                        if args.defrouter:
-                            if args.dns:
-                                configurer.dhcpPool(args.configure, args.name, args.network, args.defrouter, args.dns)
-            if args.dhcp:
-                if args.static:
-                    if args.name:
-                        if args.host:
-                            if args.clientid:
-                                if args.defrouter:
-                                    if args.dns:
-                                        configurer.dhcpPool(args.configure, args.name, args.host, args.clientid, args.defrouter, args.dns)
+                missing = []
+
+                if not args.name:
+                    missing.append("name")
+                if not args.network:
+                    missing.append("network")
+                if not args.defrouter:
+                    missing.append("defrouter")
+                if not args.dns:
+                    missing.append("dns")
+
+                if missing:
+                    print(f"Missing arguments: {', '.join(missing)}")
+                else:
+                    configurer.dhcpPool(
+                        configure=args.configure,
+                        name=args.name,
+                        network=args.network,
+                        defrouter=args.defrouter,
+                        dns=args.dns)
+                    
+            if args.dhcp and args.static:
+                missing = []
+
+                if not args.name:
+                    missing.append("name")
+                if not args.host:
+                    missing.append("host")
+                if not args.clientid:
+                    missing.append("clientid")
+                if not args.defrouter:
+                    missing.append("defrouter")
+                if not args.dns:
+                    missing.append("dns")
+
+                if missing:
+                    print(f"Missing arguments: {', '.join(missing)}")
+                else:
+                    configurer.dhcpPool(
+                        configure=args.configure,
+                        name=args.name,
+                        host=args.host,
+                        clientid=args.clientid,
+                        defrouter=args.defrouter,
+                        dns=args.dns
+                    )
+
             if args.dhcp:
                 if args.exclude:
                     configurer.dhcpExcluded(args.configure, args.exclude)
 
             if args.routing:
                 configurer.routing(args.configure)
+
+            if args.subint:
+                configurer.subint(args.configure, args.subint)
+                if args.encap:
+                    configurer.encapsulation(args.configure, args.subint, args.encap)
+                if args.ip:
+                    configurer.intIp(args.configure, args.subint, args.ip)
+
 
 
 

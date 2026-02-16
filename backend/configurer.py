@@ -233,4 +233,44 @@ def routing(deviceIpInput):
     finally:
         device.close()
 
+### SUB INTERFACE ###
 
+def subint(deviceIpInput, subIntInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {subIntInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def encapsulation(deviceIpInput, subIntInput, encapInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {subIntInput}\n encapsulation dot1Q {encapInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+### SWITCHPORT CONFIGURATION ###
