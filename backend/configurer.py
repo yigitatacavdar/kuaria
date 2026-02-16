@@ -274,3 +274,60 @@ def encapsulation(deviceIpInput, subIntInput, encapInput):
         device.close()
 
 ### SWITCHPORT CONFIGURATION ###
+
+def switchport(deviceIpInput, intInput, modeInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {intInput}\n switchport mode {modeInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def switchportAccess(deviceIpInput, intInput, vlanInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {intInput}\n switchport access {vlanInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def switchportTrunk(deviceIpInput, intInput, vlanInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {intInput}\n switchport trunk allowed {vlanInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()

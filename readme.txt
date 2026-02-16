@@ -102,31 +102,10 @@ to do:
 
 - delete for subcommands
 
-- add svi for l3 switch vlan
-- encapsulation for router vlan
-- add interface to vlan for switch
-- interface trunk access all that
+rollback. timer or similar
 
 - port forwarding
 - acl whatever
 - static route?
 
-interface config(full config with vlans, nats, whatever), nat, acl ### 3 things to do ###
-
-- to create inter vlan routing
-    - on router on a stick
-        -create vlan on l2 switch add interfaces to vlan
-        -create interface for vlan add encapsulation and ip
-    - on l3 switch networks (svi)
-        -create vlan on l3 switch
-        -add ip address
-        -ip routing
-
-- features needed for inter vlan
-
-    - interface -int -switchport <mode>
-    - interface -int -switchport -access <vlan>
-    - interface -int -switchport -trunk <vlans>
-
-    switchport mode access
-    switchport access vlan 10
+nat, acl ### 2 things to do ###

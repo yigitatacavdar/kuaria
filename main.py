@@ -52,51 +52,54 @@ Warnings:
  
     group = parser.add_mutually_exclusive_group(required=True)
 
-    group.add_argument("-scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets [MAIN COMMAND]")
+    group.add_argument("--scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets [MAIN COMMAND]")
 
 
 
-    group.add_argument("-connect", metavar="<IP_ADDRESS>", help="get information about devices, first must -connect <IP_ADDRESS> to use other commands [MAIN COMMAND]")
+    group.add_argument("--connect", metavar="<IP_ADDRESS>", help="get information about devices, first must --connect <IP_ADDRESS> to use other commands [MAIN COMMAND]")
 
-    parser.add_argument("-info", action="store_true", help="detailed device information")
-    parser.add_argument("-env", action="store_true", help="device environment information")
-    parser.add_argument("-config", action="store_true", help="running configuration")
-    parser.add_argument("-interface", action="store_true", help="interfaces")
-    parser.add_argument("-vlans", action="store_true", help="vlans")
-    parser.add_argument("-mac", action="store_true", help="mac table")
-    parser.add_argument("-arp", action="store_true", help="arp table")
-    parser.add_argument("-switchports", action="store_true", help="switchports")
-    parser.add_argument("-route", action="store_true", help="routing table")
-    parser.add_argument("-lldp", action="store_true", help="lldp neighbors")
+    parser.add_argument("--info", action="store_true", help="detailed device information")
+    parser.add_argument("--env", action="store_true", help="device environment information")
+    parser.add_argument("--config", action="store_true", help="running configuration")
+    parser.add_argument("--interface", action="store_true", help="interfaces")
+    parser.add_argument("--vlans", action="store_true", help="vlans")
+    parser.add_argument("--mac", action="store_true", help="mac table")
+    parser.add_argument("--arp", action="store_true", help="arp table")
+    parser.add_argument("--switchports", action="store_true", help="switchports")
+    parser.add_argument("--route", action="store_true", help="routing table")
+    parser.add_argument("--lldp", action="store_true", help="lldp neighbors")
 
 
 
-    group.add_argument("-configure", metavar="<IP_ADDRESS>", help="change configuration of devices, first must -configure <IP_ADDRESS> to use other commands [MAIN COMMAND]")
+    group.add_argument("--configure", metavar="<IP_ADDRESS>", help="change configuration of devices, first must --configure <IP_ADDRESS> to use other commands [MAIN COMMAND]")
 
-    parser.add_argument("-hostname", metavar="<hostname>", help="change the hostname of the device [SUB COMMAND]")
-    parser.add_argument("-delete", metavar="<config>", help="delete a configuration [SUB COMMAND]")
+    parser.add_argument("--hostname", metavar="<hostname>", help="change the hostname of the device [SUB COMMAND]")
+    parser.add_argument("--delete", metavar="<config>", help="delete a configuration [SUB COMMAND]")
 
-    parser.add_argument("-vlan", metavar="<vlan>", help="create a vlan [SUB COMMAND]")
-    parser.add_argument("-name", metavar="<name>", help="add a name to vlans and other configurations")
+    parser.add_argument("--vlan", metavar="<vlan>", help="create a vlan [SUB COMMAND]")
+    parser.add_argument("--name", metavar="<name>", help="add a name to vlans and other configurations")
 
-    parser.add_argument("-int", metavar="<interface>", help="configure interfaces [SUB COMMAND]")
-    parser.add_argument("-open", action="store_true", help="open interface (no shutdown)")
-    parser.add_argument("-close", action="store_true", help="close interface (shutdown)")
-    parser.add_argument("-ip", metavar="<ip> <subnet>", help="add ip address to interfaces '<ip> <subnet>' or 'dhcp'")
+    parser.add_argument("--int", metavar="<interface>", help="configure interfaces [SUB COMMAND]")
+    parser.add_argument("--open", action="store_true", help="open interface (no shutdown)")
+    parser.add_argument("--close", action="store_true", help="close interface (shutdown)")
+    parser.add_argument("--ip", metavar="<ip> <subnet>", help="add ip address to interfaces '<ip> <subnet>' or 'dhcp'")
+    parser.add_argument("--switchport", metavar="<mode>", help="add switchport mode to interface 'access' or 'trunk'")
+    parser.add_argument("--access", metavar="<vlan>", help="add vlan to access interface")
+    parser.add_argument("--trunk", metavar="<vlans>", help="add vlans to trunk interface")
 
-    parser.add_argument("-dhcp", action="store_true", help="add dhcp pool 'must have -name -network -defrouter -dns' [SUB COMMAND]")
-    parser.add_argument("-static", action="store_true", help="use with -dhcp to assign a static dhcp pool to a device 'must have -name -host -clientid -defrouter -dns'")
-    parser.add_argument("-exclude", metavar="<ip_range>", help="use with -dhcp to add excluded address to dhcp")
-    parser.add_argument("-network", metavar="<ip> <subnet>", help="add ip to dhcp pool")
-    parser.add_argument("-defrouter", metavar="<ip>", help="add default router to dhcp pool")
-    parser.add_argument("-dns", metavar="<dns>", help="add dns server to dhcp pool")
-    parser.add_argument("-clientid", metavar="<mac>", help="add client identifier to dhcp pool")
-    parser.add_argument("-host", metavar="<ip> <subnet>", help="add host ip to dhcp pool")
+    parser.add_argument("--dhcp", action="store_true", help="add dhcp pool 'must have -name -network -defrouter -dns' [SUB COMMAND]")
+    parser.add_argument("--static", action="store_true", help="use with -dhcp to assign a static dhcp pool to a device 'must have -name -host -clientid -defrouter -dns'")
+    parser.add_argument("--exclude", metavar="<ip_range>", help="use with -dhcp to add excluded address to dhcp")
+    parser.add_argument("--network", metavar="<ip> <subnet>", help="add ip to dhcp pool")
+    parser.add_argument("--defrouter", metavar="<ip>", help="add default router to dhcp pool")
+    parser.add_argument("--dns", metavar="<dns>", help="add dns server to dhcp pool")
+    parser.add_argument("--clientid", metavar="<mac>", help="add client identifier to dhcp pool")
+    parser.add_argument("--host", metavar="<ip> <subnet>", help="add host ip to dhcp pool")
 
-    parser.add_argument("-routing", action="store_true", help="enable ip routing [SUB COMMAND]")
+    parser.add_argument("--routing", action="store_true", help="enable ip routing [SUB COMMAND]")
 
-    parser.add_argument("-subint", metavar="<sub interface>", help="add sub interface [SUB COMMAND]")
-    parser.add_argument("-encap", metavar="<vlan number>", help="use with -subint to add encapsulation")
+    parser.add_argument("--subint", metavar="<sub interface>", help="add sub interface [SUB COMMAND]")
+    parser.add_argument("--encap", metavar="<vlan number>", help="use with -subint to add encapsulation")
 
 
     
@@ -134,7 +137,7 @@ Warnings:
                 configurer.changeHostname(args.configure, args.hostname)
 
             if args.delete:
-                configurer.delete(args.confiure, args.delete)
+                configurer.delete(args.configure, args.delete)
 
             if args.vlan:
                 configurer.addVlan(args.configure, args.vlan)
@@ -150,6 +153,13 @@ Warnings:
                     configurer.intIp(args.configure, args.int, args.ip)
                 if args.delete:
                     configurer.deleteInt(args.configure, args.int, args.delete)
+                if args.switchport:
+                    configurer.switchport(args.configure, args.int, args.switchport)
+                if args.access:
+                    configurer.switchportAccess(args.configure, args.int, args.access)
+                if args.trunk:
+                    configurer.switchportTrunk(args.configure, args.int, args.trunk)
+
 
             if args.dhcp:
                 missing = []
@@ -212,6 +222,10 @@ Warnings:
                     configurer.encapsulation(args.configure, args.subint, args.encap)
                 if args.ip:
                     configurer.intIp(args.configure, args.subint, args.ip)
+                if args.open:
+                    configurer.intShutdown(args.configure, args.subint, False)
+                if args.close:
+                    configurer.intShutdown(args.configure, args.subint, True)
 
 
 
