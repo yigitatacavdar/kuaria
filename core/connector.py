@@ -315,7 +315,7 @@ def autoConnect(deviceIpInput):
             continue
         else:
             print("connected to %s" %deviceIpInput)
-            print("username and password found as: %s, %s" % (usernameCommon, passwordCommon))
+            print("username and password found")
             return device
     print("connection failed with common credentials")
     device = manualConnect(deviceIpInput)

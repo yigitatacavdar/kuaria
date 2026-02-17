@@ -133,6 +133,25 @@ def intIp(deviceIpInput, intInput, ipInput):
     finally:
         device.close()
 
+def intNat(deviceIpInput, intInput, natInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"int {intInput}\n ip nat {natInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
 def deleteInt(deviceIpInput, intInput, deleteInput):
     device = autoConnect(deviceIpInput)
     sureInput = areYouSureInput()
@@ -224,6 +243,25 @@ def routing(deviceIpInput):
         return
     try:
         conf = f"ip routing"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
+        print("Configuration saved successfully")
+    except Exception as e:
+        print("Error, rolling back:", e)
+        device.rollback()
+    finally:
+        device.close()
+
+def sroute(deviceIpInput, srouteInput):
+    device = autoConnect(deviceIpInput)
+    sureInput = areYouSureInput()
+    
+    if not sureInput:
+        print("Canceled configuration.")
+        device.close()
+        return
+    try:
+        conf = f"ip route {srouteInput}"
         device.load_merge_candidate(config=conf)
         device.commit_config()
         print("Configuration saved successfully")

@@ -23,7 +23,7 @@ see current feature document for work flow
 
 Dev Guide:
 
-napalm, python-nmap ntc-templates textfsm tabulate packages need to be installed
+napalm, netmiko, python-nmap ntc-templates, tabulate packages need to be installed
 
 > create myproject-venv directory
 
@@ -37,7 +37,7 @@ source ~/myproject-venv/bin/activate
 pip install --upgrade pip
 
 > install packages
-pip install python-nmap napalm tabulate
+pip install python-nmap napalm tabulate ntc-templates netmiko
 
 > to get it working with vscode go to command pallate and select python: select interpreter
 
@@ -106,6 +106,5 @@ rollback. timer or similar
 
 - port forwarding
 - acl whatever
-- static route?
 
 nat, acl ### 2 things to do ###

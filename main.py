@@ -83,6 +83,7 @@ Warnings:
     parser.add_argument("--open", action="store_true", help="open interface (no shutdown)")
     parser.add_argument("--close", action="store_true", help="close interface (shutdown)")
     parser.add_argument("--ip", metavar="<ip> <subnet>", help="add ip address to interfaces '<ip> <subnet>' or 'dhcp'")
+    parser.add_argument("--nat", metavar="<direction>", help="add nat to interfaces 'open' or 'close'")
     parser.add_argument("--switchport", metavar="<mode>", help="add switchport mode to interface 'access' or 'trunk'")
     parser.add_argument("--access", metavar="<vlan>", help="add vlan to access interface")
     parser.add_argument("--trunk", metavar="<vlans>", help="add vlans to trunk interface")
@@ -90,13 +91,14 @@ Warnings:
     parser.add_argument("--dhcp", action="store_true", help="add dhcp pool 'must have -name -network -defrouter -dns' [SUB COMMAND]")
     parser.add_argument("--static", action="store_true", help="use with -dhcp to assign a static dhcp pool to a device 'must have -name -host -clientid -defrouter -dns'")
     parser.add_argument("--exclude", metavar="<ip_range>", help="use with -dhcp to add excluded address to dhcp")
-    parser.add_argument("--network", metavar="<ip> <subnet>", help="add ip to dhcp pool")
-    parser.add_argument("--defrouter", metavar="<ip>", help="add default router to dhcp pool")
-    parser.add_argument("--dns", metavar="<dns>", help="add dns server to dhcp pool")
-    parser.add_argument("--clientid", metavar="<mac>", help="add client identifier to dhcp pool")
-    parser.add_argument("--host", metavar="<ip> <subnet>", help="add host ip to dhcp pool")
+    parser.add_argument("--network", metavar="<ip> <subnet>", help="add network ip")
+    parser.add_argument("--defrouter", metavar="<ip>", help="add default router")
+    parser.add_argument("--dns", metavar="<dns>", help="add dns server")
+    parser.add_argument("--clientid", metavar="<mac>", help="add client identifier")
+    parser.add_argument("--host", metavar="<ip> <subnet>", help="add host ip")
 
     parser.add_argument("--routing", action="store_true", help="enable ip routing [SUB COMMAND]")
+    parser.add_argument("--route", metavar="<ip> <subnet> <next-hop>", help="enable static routing [SUB COMMAND]")
 
     parser.add_argument("--subint", metavar="<sub interface>", help="add sub interface [SUB COMMAND]")
     parser.add_argument("--encap", metavar="<vlan number>", help="use with -subint to add encapsulation")
@@ -159,6 +161,8 @@ Warnings:
                     configurer.switchportAccess(args.configure, args.int, args.access)
                 if args.trunk:
                     configurer.switchportTrunk(args.configure, args.int, args.trunk)
+                if args.nat:
+                    configurer.intNat(args.configure, args.int, args.nat)
 
 
             if args.dhcp:
@@ -215,6 +219,9 @@ Warnings:
 
             if args.routing:
                 configurer.routing(args.configure)
+
+            if args.route:
+                configurer.sroute(args.configure, args.sroute)
 
             if args.subint:
                 configurer.subint(args.configure, args.subint)
