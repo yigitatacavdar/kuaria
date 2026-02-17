@@ -17,9 +17,9 @@ ___/____/    \____________________/___________________\___/          /______/___
 """
 
 import argparse
-from backend import scanner
-from backend import connector
-from backend import configurer
+from core import scanner
+from core import connector
+from core import configurer
 
 def wizard():
     print(kuariaAscii)
