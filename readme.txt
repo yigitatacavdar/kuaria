@@ -102,9 +102,10 @@ to do:
 
 - delete for subcommands
 
+- clean functions optimize structure***
+
 rollback. timer or similar
 
-- port forwarding
 - acl whatever
 
-nat, acl ### 2 things to do ###
+acl ### 1 things to do ###

@@ -83,7 +83,7 @@ Warnings:
     parser.add_argument("--open", action="store_true", help="open interface (no shutdown)")
     parser.add_argument("--close", action="store_true", help="close interface (shutdown)")
     parser.add_argument("--ip", metavar="<ip> <subnet>", help="add ip address to interfaces '<ip> <subnet>' or 'dhcp'")
-    parser.add_argument("--nat", metavar="<direction>", help="add nat to interfaces 'open' or 'close'")
+    parser.add_argument("--nat", metavar="<direction>", help="add nat to interfaces 'inside' or 'outside'")
     parser.add_argument("--switchport", metavar="<mode>", help="add switchport mode to interface 'access' or 'trunk'")
     parser.add_argument("--access", metavar="<vlan>", help="add vlan to access interface")
     parser.add_argument("--trunk", metavar="<vlans>", help="add vlans to trunk interface")
@@ -98,11 +98,17 @@ Warnings:
     parser.add_argument("--host", metavar="<ip> <subnet>", help="add host ip")
 
     parser.add_argument("--routing", action="store_true", help="enable ip routing [SUB COMMAND]")
-    parser.add_argument("--route", metavar="<ip> <subnet> <next-hop>", help="enable static routing [SUB COMMAND]")
+    parser.add_argument("--sroute", metavar="<ip> <subnet> <next-hop>", help="enable static routing [SUB COMMAND]")
 
     parser.add_argument("--subint", metavar="<sub interface>", help="add sub interface [SUB COMMAND]")
     parser.add_argument("--encap", metavar="<vlan number>", help="use with -subint to add encapsulation")
 
+    parser.add_argument("--pat", action="store_true", help="add port address translation 'must have --nat --list --int --pat'")
+    parser.add_argument("--pfw", action="store_true", help="add port forwarding 'must have --nat --proto --ip --inport --int --outport'")
+    parser.add_argument("--list", metavar="<acl-list>", help="add acl list")
+    parser.add_argument("--proto", metavar="<protocol>", help="add protocol")
+    parser.add_argument("--inport", metavar="<inside port>", help="add inside port")
+    parser.add_argument("--outport", metavar="<outside port>", help="add outside port")
 
     
     args, unknown = parser.parse_known_args()
@@ -220,7 +226,7 @@ Warnings:
             if args.routing:
                 configurer.routing(args.configure)
 
-            if args.route:
+            if args.sroute:
                 configurer.sroute(args.configure, args.sroute)
 
             if args.subint:
@@ -234,7 +240,56 @@ Warnings:
                 if args.close:
                     configurer.intShutdown(args.configure, args.subint, True)
 
+            
+            if args.pat:
+                missing = []
 
+                if not args.nat:
+                    missing.append("nat")
+                if not args.list:
+                    missing.append("list")
+                if not args.int:
+                    missing.append("int")
+                if not args.pat:
+                    missing.append("pat")
+
+                if missing:
+                    print(f"Missing arguments: {', '.join(missing)}")
+                else:
+                    configurer.pat(
+                        configure=args.configure,
+                        nat=args.nat,
+                        list=args.list,
+                        int=args.int,
+                        pat=args.pat)
+                    
+            if args.pfw:
+                missing = []
+
+                if not args.nat:
+                    missing.append("nat")
+                if not args.protocol:
+                    missing.append("protocol")
+                if not args.ip:
+                    missing.append("ip")
+                if not args.inport:
+                    missing.append("inport")
+                if not args.int:
+                    missing.append("int")
+                if not args.outport:
+                    missing.append("outport")
+
+                if missing:
+                    print(f"Missing arguments: {', '.join(missing)}")
+                else:
+                    configurer.portForward(
+                        configure=args.configure,
+                        nat=args.nat,
+                        protocol=args.proto,
+                        ip=args.ip,
+                        inport=args.inport,
+                        int=args.int,
+                        outport=args.outport)
 
 
     
