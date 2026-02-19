@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kuaria"
-version = "1.0.0"
+version = "1.0.1"
 description = "simple command line tool for network automation"
 authors = [
     {name="Yigit Ata Cavdar", email="yigitatacavdar@gmail.com"}

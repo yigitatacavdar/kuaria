@@ -47,7 +47,7 @@ def wizard():
     connector.autoConnect(deviceIpInput)
 
 def main():
-    parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria v1.0.0 - simple command line tool for network automation\n""Copyright (C) 2026 Yigit Ata Cavdar", epilog="""
+    parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria v1.0.1 - simple command line tool for network automation\n""Copyright (C) 2026 Yigit Ata Cavdar", epilog="""
 Warnings:
   ssh and scp server must be enabled on devices (ip scp server enable)
   user privilege should be 15 (username admin privilege 15 secret <password>) or (username admin privilege 15 password <password>)

@@ -59,7 +59,7 @@ python -m kuaria.main -h
 Docs:
 
 kuaria - simple command line tool for network automation
-version: v1.0.0
+version: v1.0.1
 Copyright (C) 2026 Yigit Ata Cavdar
 
 current feature document 19/02/2026
