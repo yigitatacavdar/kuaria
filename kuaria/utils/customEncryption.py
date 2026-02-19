@@ -25,7 +25,7 @@ def encrypt(plaintext: str, password: str) -> bytes:
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(padded_data) + encryptor.finalize()
-    return salt + iv + ciphertext  # prepend salt+iv for decryption
+    return salt + iv + ciphertext
 
 def decrypt(ciphertext: bytes, password: str) -> str:
     salt = ciphertext[:16]

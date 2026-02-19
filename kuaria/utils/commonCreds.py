@@ -1,5 +1,5 @@
 from pathlib import Path
-from utils import customEncryption
+from kuaria.utils import customEncryption
 import hashlib
 
 def get_data_path(filename: str) -> Path:

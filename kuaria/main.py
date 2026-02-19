@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+"""
+kuaria - simple command line tool for network automation
+
+Copyright (C) 2026 Yigit Ata Cavdar
+
+This program is licensed under the GNU General Public License v3.0.
+See the LICENSE file for details.
+"""
 
 kuariaAscii = r"""
                ______
@@ -17,10 +24,10 @@ ___/____/    \____________________/___________________\___/          /______/___
 """
 
 import argparse
-from core import scanner
-from core import connector
-from core import configurer
-from utils import commonCreds
+from kuaria.core import scanner
+from kuaria.core import connector
+from kuaria.core import configurer
+from kuaria.utils import commonCreds
 
 def wizard():
     print(kuariaAscii)
@@ -40,7 +47,7 @@ def wizard():
     connector.autoConnect(deviceIpInput)
 
 def main():
-    parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria - simple command line tool for network automation", epilog="""
+    parser = argparse.ArgumentParser(prog=kuariaAscii, description="kuaria v1.0.0 - simple command line tool for network automation\n""Copyright (C) 2026 Yigit Ata Cavdar", epilog="""
 Warnings:
   ssh and scp server must be enabled on devices (ip scp server enable)
   user privilege should be 15 (username admin privilege 15 secret <password>) or (username admin privilege 15 password <password>)

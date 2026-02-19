@@ -1,5 +1,5 @@
 
-from utils.commonCreds import loadCommonCreds
+from kuaria.utils.commonCreds import loadCommonCreds
 from napalm import get_network_driver
 from napalm.base.exceptions import ConnectionException
 from netmiko import NetmikoAuthenticationException

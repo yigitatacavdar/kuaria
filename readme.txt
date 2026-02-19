@@ -15,11 +15,13 @@ ___/____/    \____________________/___________________\___/          /______/___
 
 Created By Yigit Ata Cavdar
 
+Copyright (C) 2026 Yigit Ata Cavdar
+
 kuaria - simple command line tool for network automation
 
 see current feature document for work flow
 
-to become a contributor, just email me at yigitatacavdar@gmail.com
+to become a collaborator, just email me at yigitatacavdar@gmail.com
 
 ---------------------------------------------------------------------
 
@@ -27,10 +29,10 @@ Dev Guide:
 
 napalm, netmiko, python-nmap ntc-templates, tabulate packages need to be installed
 
-> create myproject-venv directory
+> create kuaria-venv directory
 
 > create a virtual environment
-python3 -m venv ~/myproject-venv
+python3 -m venv ~/kuaria-venv
 
 > activate
 source ~/myproject-venv/bin/activate
@@ -49,28 +51,33 @@ myproject-venv/bin/python
 > to see the packages installed
 python -m pip list
 
+> run
+python -m kuaria.main -h
+
 ---------------------------------------------------------------------
 
 Docs:
 
 kuaria - simple command line tool for network automation
+version: v1.0.0
+Copyright (C) 2026 Yigit Ata Cavdar
 
-current feature document 06/10/2025
+current feature document 19/02/2026
 
 3 main parts are required for the program to exist
 
 the scanner:
 
-- auto scans common subnets, if no hosts found, asks user to input the desired subnet.
+- scans entered subnets.
 - retrieves active ips, port 22 states, device info, these are used when connecting with the configurer
 
 - usage: --scan <IP_ADDRESS>
 
 the connector:
 
-- uses info gathered by the scanner to try an auto login on discovered devices
-- retrieves detailed device info(make, model) 
-- the user can login to devices that failed the auto login, the credentials entered this way are safely stored and will be used to auto login into devices
+- uses saved credentials to auto-connect to devices with given ip
+- used with info commands to retrieve detailed device info(make, model, config) 
+- the user can login to devices that failed the auto login
 
 - usage: --connect <IP_ADDRESS>
          --connect <IP_ADDRESS> --info
@@ -80,29 +87,18 @@ the connector:
 the configurer:
 
 - the basic configuration options of the program are: setting hostname, setting ip address, vlan configuration, port forwarding, static ip leasing
-- the basic configuration options for switches and routers are different
 - switches: vlan configuration, setting ports for inter-vlan routing
 - routers: outside/inside interface configuration, port forwarding, static ip leasing
 
 - usage: --configure <IP_ADDRESS> --hostname "newhostname"
          --configure <IP_ADDRESS> --ip "<IP_ADDRESS>"
-         --configure <IP_ADDRESS> --ip "<IP_ADDRESS>" 
 
-
+-----------------------------------------------------------------------------
 
 to do:
 
-- common credentials are to be entered by the user, saved, and used for connection with commoncreds, user can enter like 3 commoncreds to not tire ssh(for laterrrr)
-    - a cred password to view creds
-    - saveCreds to encrypt and save creds to file
-    - commonCreds to return creds
+- a wizard that finds your topology and sets a general config automatically (long shot)
 
 
-
-- a wizard that finds your topology and sets a general config automatically (hard)
-
-- locally saves device creds of machines with specific ip
-
-- testing to be done on all commands
 
 

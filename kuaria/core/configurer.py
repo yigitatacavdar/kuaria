@@ -1,4 +1,4 @@
-from core.connector import autoConnect
+from kuaria.core.connector import autoConnect
 
 def areYouSureInput():
     sureInput = input("are you sure you want to change this configuration? (Y/n) ").strip().lower()
