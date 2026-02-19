@@ -64,6 +64,8 @@ Copyright (C) 2026 Yigit Ata Cavdar
 
 current feature document 19/02/2026
 
+currently only works for cisco devices
+
 3 main parts are required for the program to exist
 
 the scanner:
@@ -79,8 +81,7 @@ the connector:
 - used with info commands to retrieve detailed device info(make, model, config) 
 - the user can login to devices that failed the auto login
 
-- usage: --connect <IP_ADDRESS>
-         --connect <IP_ADDRESS> --info
+- usage: --connect <IP_ADDRESS> --info
          --connect <IP_ADDRESS> --config
 
 
@@ -98,6 +99,7 @@ the configurer:
 to do:
 
 - a wizard that finds your topology and sets a general config automatically (long shot)
+
 
 
 
