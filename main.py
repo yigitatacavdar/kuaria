@@ -70,7 +70,6 @@ Warnings:
     parser.add_argument("--lldp", action="store_true", help="lldp neighbors")
 
 
-
     group.add_argument("--configure", metavar="<IP_ADDRESS>", help="change configuration of devices, first must --configure <IP_ADDRESS> to use other commands [MAIN COMMAND]")
 
     parser.add_argument("--hostname", metavar="<hostname>", help="change the hostname of the device [SUB COMMAND]")
@@ -87,6 +86,9 @@ Warnings:
     parser.add_argument("--switchport", metavar="<mode>", help="add switchport mode to interface 'access' or 'trunk'")
     parser.add_argument("--access", metavar="<vlan>", help="add vlan to access interface")
     parser.add_argument("--trunk", metavar="<vlans>", help="add vlans to trunk interface")
+    parser.add_argument("--accgr", metavar="<acl> <in/out>", help="add an acl to the interface")
+    parser.add_argument("--speed", metavar="<speed>", help="add speed to interfaces '<speed>' or 'auto'")
+    parser.add_argument("--duplex", metavar="<duplex>", help="add duplex to interfaces 'full' or 'half' or 'auto'")
 
     parser.add_argument("--dhcp", action="store_true", help="add dhcp pool 'must have -name -network -defrouter -dns' [SUB COMMAND]")
     parser.add_argument("--static", action="store_true", help="use with -dhcp to assign a static dhcp pool to a device 'must have -name -host -clientid -defrouter -dns'")
@@ -100,15 +102,20 @@ Warnings:
     parser.add_argument("--routing", action="store_true", help="enable ip routing [SUB COMMAND]")
     parser.add_argument("--sroute", metavar="<ip> <subnet> <next-hop>", help="enable static routing [SUB COMMAND]")
 
-    parser.add_argument("--subint", metavar="<sub interface>", help="add sub interface [SUB COMMAND]")
+    parser.add_argument("--subint", metavar="<sub-interface>", help="add sub interface [SUB COMMAND]")
     parser.add_argument("--encap", metavar="<vlan number>", help="use with -subint to add encapsulation")
 
-    parser.add_argument("--pat", action="store_true", help="add port address translation 'must have --nat --list --int --pat'")
-    parser.add_argument("--pfw", action="store_true", help="add port forwarding 'must have --nat --proto --ip --inport --int --outport'")
+    parser.add_argument("--pat", action="store_true", help="add port address translation 'must have --nat --list --int --pat' [SUB COMMAND]")
+    parser.add_argument("--pfw", action="store_true", help="add port forwarding 'must have --nat --proto --ip --inport --int --outport' [SUB COMMAND]")
     parser.add_argument("--list", metavar="<acl-list>", help="add acl list")
     parser.add_argument("--proto", metavar="<protocol>", help="add protocol")
     parser.add_argument("--inport", metavar="<inside port>", help="add inside port")
     parser.add_argument("--outport", metavar="<outside port>", help="add outside port")
+
+    parser.add_argument("--aclstd", action="store_true", help="add a standart access-list 'must have --name --permit --deny'")
+    parser.add_argument("--aclext", action="store_true", help="add an extended access-list 'must have --name --permit --deny'")
+    parser.add_argument("--permit", metavar="<rule>", help="add a permit rule")
+    parser.add_argument("--deny", metavar="<rule>", help="add a deny rule")
 
     
     args, unknown = parser.parse_known_args()
@@ -169,6 +176,12 @@ Warnings:
                     configurer.switchportTrunk(args.configure, args.int, args.trunk)
                 if args.nat:
                     configurer.intNat(args.configure, args.int, args.nat)
+                if args.accgr:
+                    configurer.intAccGr(args.configure, args.int, args.accgr)
+                if args.speed:
+                    configurer.intSpeed(args.configure, args.int, args.speed)
+                if args.duplex:
+                    configurer.intDuplex(args.configure, args.int, args.duplex)
 
 
             if args.dhcp:
@@ -187,11 +200,11 @@ Warnings:
                     print(f"Missing arguments: {', '.join(missing)}")
                 else:
                     configurer.dhcpPool(
-                        configure=args.configure,
-                        name=args.name,
-                        network=args.network,
-                        defrouter=args.defrouter,
-                        dns=args.dns)
+                        deviceIpInput=args.configure,
+                        nameInput=args.name,
+                        networkInput=args.network,
+                        defaultRouterInput=args.defrouter,
+                        dnsServerInput=args.dns)
                     
             if args.dhcp and args.static:
                 missing = []
@@ -211,12 +224,12 @@ Warnings:
                     print(f"Missing arguments: {', '.join(missing)}")
                 else:
                     configurer.dhcpPool(
-                        configure=args.configure,
-                        name=args.name,
-                        host=args.host,
-                        clientid=args.clientid,
-                        defrouter=args.defrouter,
-                        dns=args.dns
+                        deviceIpInput=args.configure,
+                        nameInput=args.name,
+                        hostInput=args.host,
+                        clientIdentifierInput=args.clientid,
+                        defaultRouterInput=args.defrouter,
+                        dnsServerInput=args.dns
                     )
 
             if args.dhcp:
@@ -257,11 +270,11 @@ Warnings:
                     print(f"Missing arguments: {', '.join(missing)}")
                 else:
                     configurer.pat(
-                        configure=args.configure,
-                        nat=args.nat,
-                        list=args.list,
-                        int=args.int,
-                        pat=args.pat)
+                        deviceIpInput=args.configure,
+                        natInput=args.nat,
+                        listInput=args.list,
+                        intInput=args.int,
+                        patInput=args.pat)
                     
             if args.pfw:
                 missing = []
@@ -283,15 +296,51 @@ Warnings:
                     print(f"Missing arguments: {', '.join(missing)}")
                 else:
                     configurer.portForward(
-                        configure=args.configure,
-                        nat=args.nat,
-                        protocol=args.proto,
-                        ip=args.ip,
-                        inport=args.inport,
-                        int=args.int,
-                        outport=args.outport)
+                        deviceIpInput=args.configure,
+                        natInput=args.nat,
+                        protocolInput=args.proto,
+                        ipInput=args.ip,
+                        inPort=args.inport,
+                        intInput=args.int,
+                        outPort=args.outport)
 
+            if args.aclstd:
+                missing = []
 
+                if not args.name:
+                    missing.append("name")
+                if not args.permit:
+                    missing.append("permit")
+                if not args.deny:
+                    missing.append("deny")
+
+                if missing:
+                    print(f"Missing arguments: {', '.join(missing)}")
+                else:
+                    configurer.aclStandart(
+                        deviceIpInput=args.configure,
+                        nameInput=args.name,
+                        permitRuleInput=args.permit,
+                        denyRuleInput=args.deny)
+
+            if args.aclext:
+                missing = []
+
+                if not args.name:
+                    missing.append("name")
+                if not args.permit:
+                    missing.append("permit")
+                if not args.deny:
+                    missing.append("deny")
+
+                if missing:
+                    print(f"Missing arguments: {', '.join(missing)}")
+                else:
+                    configurer.aclExtended(
+                        deviceIpInput=args.configure,
+                        nameInput=args.name,
+                        permitRuleInput=args.permit,
+                        denyRuleInput=args.deny)
     
 if __name__ == "__main__":
     main()

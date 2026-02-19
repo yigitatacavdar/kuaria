@@ -84,9 +84,21 @@ def intNat(deviceIpInput, intInput, natInput):
     conf = f"int {intInput}\n ip nat {natInput}"
     config(deviceIpInput, conf)
 
+def intAccGr(deviceIpInput, intInput, aclInput):
+    conf = f"int {intInput}\n ip access-group {aclInput}"
+    config(deviceIpInput, conf)
+
+def intSpeed(deviceIpInput, intInput, speedInput):
+    conf = f"int {intInput}\n speed {speedInput}"
+
+def intDuplex(deviceIpInput, intInput, duplexInput):
+    conf = f"int {intInput}\n duplex {duplexInput}"
+
 def deleteInt(deviceIpInput, intInput, deleteInput):
     conf = f"int {intInput}\n no {deleteInput}"
     config(deviceIpInput, conf)
+
+## access-group
 
 ### DHCP CONFIGURATION ###
 
@@ -148,8 +160,13 @@ def portForward(deviceIpInput, natInput, protocolInput, ipInput, inPort, intInpu
 
 ### ACL CONFIGURATION ###
 
+def aclStandart(deviceIpInput, nameInput, permitRuleInput, denyRuleInput):
+    conf = f"ip access-list standart {nameInput}\n permit {permitRuleInput}\n deny {denyRuleInput}"
+    config(deviceIpInput, conf)
 
-
+def aclExtended(deviceIpInput, nameInput, permitRuleInput, denyRuleInput):
+    conf = f"ip access-list extended {nameInput}\n permit {permitRuleInput}\n deny {denyRuleInput}"
+    config(deviceIpInput, conf)
 
 
 

@@ -19,6 +19,8 @@ kuaria - simple command line tool for network automation
 
 see current feature document for work flow
 
+to become a contributor, just email me at yigitatacavdar@gmail.com
+
 ---------------------------------------------------------------------
 
 Dev Guide:
@@ -62,7 +64,7 @@ the scanner:
 - auto scans common subnets, if no hosts found, asks user to input the desired subnet.
 - retrieves active ips, port 22 states, device info, these are used when connecting with the configurer
 
-- usage: -scan <IP_ADDRESS>
+- usage: --scan <IP_ADDRESS>
 
 the connector:
 
@@ -70,9 +72,9 @@ the connector:
 - retrieves detailed device info(make, model) 
 - the user can login to devices that failed the auto login, the credentials entered this way are safely stored and will be used to auto login into devices
 
-- usage: -connect <IP_ADDRESS>
-         -connect <IP_ADDRESS> -info
-         -connect <IP_ADDRESS> -config
+- usage: --connect <IP_ADDRESS>
+         --connect <IP_ADDRESS> --info
+         --connect <IP_ADDRESS> --config
 
 
 the configurer:
@@ -82,9 +84,9 @@ the configurer:
 - switches: vlan configuration, setting ports for inter-vlan routing
 - routers: outside/inside interface configuration, port forwarding, static ip leasing
 
-- usage: -configure <IP_ADDRESS> -hostname "newhostname"
-         -configure <IP_ADDRESS> -changeip "<IP_ADDRESS>"   <- works for switches   ---| some way to
-         -configure <IP_ADDRESS> -changeip "<IP_ADDRESS>" -interface "GE0/1"   <- works for routers---| differentiate?
+- usage: --configure <IP_ADDRESS> --hostname "newhostname"
+         --configure <IP_ADDRESS> --ip "<IP_ADDRESS>"
+         --configure <IP_ADDRESS> --ip "<IP_ADDRESS>" 
 
 
 
@@ -106,6 +108,8 @@ to do:
 
 rollback. timer or similar
 
-- acl whatever
+- speed/duplex
+
+- acl wiring to be done
 
 acl ### 1 things to do ###
