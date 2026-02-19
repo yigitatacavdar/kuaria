@@ -22,6 +22,8 @@ def delete(deviceIpInput, confInput):
     try:
         print(f"deleting configuration {confInput}")
         conf = f"no {confInput}"
+        device.load_merge_candidate(config=conf)
+        device.commit_config()
         print("Configuration deleted successfully")
     except Exception as e:
         print("Error, rolling back:", e)
@@ -90,9 +92,11 @@ def intAccGr(deviceIpInput, intInput, aclInput):
 
 def intSpeed(deviceIpInput, intInput, speedInput):
     conf = f"int {intInput}\n speed {speedInput}"
+    config(deviceIpInput, conf)
 
 def intDuplex(deviceIpInput, intInput, duplexInput):
     conf = f"int {intInput}\n duplex {duplexInput}"
+    config(deviceIpInput, conf)
 
 def deleteInt(deviceIpInput, intInput, deleteInput):
     conf = f"int {intInput}\n no {deleteInput}"
@@ -160,8 +164,8 @@ def portForward(deviceIpInput, natInput, protocolInput, ipInput, inPort, intInpu
 
 ### ACL CONFIGURATION ###
 
-def aclStandart(deviceIpInput, nameInput, permitRuleInput, denyRuleInput):
-    conf = f"ip access-list standart {nameInput}\n permit {permitRuleInput}\n deny {denyRuleInput}"
+def aclStandard(deviceIpInput, nameInput, permitRuleInput, denyRuleInput):
+    conf = f"ip access-list standard {nameInput}\n permit {permitRuleInput}\n deny {denyRuleInput}"
     config(deviceIpInput, conf)
 
 def aclExtended(deviceIpInput, nameInput, permitRuleInput, denyRuleInput):

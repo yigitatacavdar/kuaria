@@ -86,8 +86,8 @@ Warnings:
     parser.add_argument("--ip", metavar="<ip> <subnet>", help="add ip address to interfaces '<ip> <subnet>' or 'dhcp'")
     parser.add_argument("--nat", metavar="<direction>", help="add nat to interfaces 'inside' or 'outside'")
     parser.add_argument("--switchport", metavar="<mode>", help="add switchport mode to interface 'access' or 'trunk'")
-    parser.add_argument("--access", metavar="<vlan>", help="add vlan to access interface")
-    parser.add_argument("--trunk", metavar="<vlans>", help="add vlans to trunk interface")
+    parser.add_argument("--access", metavar="<vlan>", help="add vlan to access interface 'vlan 10'")
+    parser.add_argument("--trunk", metavar="<vlans>", help="add vlans to trunk interface'vlan 10,20'")
     parser.add_argument("--accgr", metavar="<acl> <in/out>", help="add an acl to the interface")
     parser.add_argument("--speed", metavar="<speed>", help="add speed to interfaces '<speed>' or 'auto'")
     parser.add_argument("--duplex", metavar="<duplex>", help="add duplex to interfaces 'full' or 'half' or 'auto'")
@@ -285,7 +285,7 @@ Warnings:
 
                 if not args.nat:
                     missing.append("nat")
-                if not args.protocol:
+                if not args.proto:
                     missing.append("protocol")
                 if not args.ip:
                     missing.append("ip")
@@ -321,7 +321,7 @@ Warnings:
                 if missing:
                     print(f"Missing arguments: {', '.join(missing)}")
                 else:
-                    configurer.aclStandart(
+                    configurer.aclStandard(
                         deviceIpInput=args.configure,
                         nameInput=args.name,
                         permitRuleInput=args.permit,
