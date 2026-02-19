@@ -20,6 +20,7 @@ import argparse
 from core import scanner
 from core import connector
 from core import configurer
+from utils import commonCreds
 
 def wizard():
     print(kuariaAscii)
@@ -47,6 +48,7 @@ Warnings:
   for information commands each general command must have a [MAIN COMMAND]
   for configuration commands each general command must have a [MAIN COMMAND] and [SUB COMMAND]
   nmap must be installed to use -scan feature
+  adding more credentials slow the shh connection
 """,
     formatter_class=argparse.RawDescriptionHelpFormatter)
  
@@ -54,7 +56,7 @@ Warnings:
 
     group.add_argument("--scan", metavar="<IP_ADDRESS>", help="scan for devices or subnets [MAIN COMMAND]")
 
-
+    group.add_argument("--creds", action="store_true", help="wizard for access to credentials of devices, credentials are encrypted and stored to automatically connect to devices [MAIN COMMAND]")
 
     group.add_argument("--connect", metavar="<IP_ADDRESS>", help="get information about devices, first must --connect <IP_ADDRESS> to use other commands [MAIN COMMAND]")
 
@@ -125,6 +127,8 @@ Warnings:
     else:
         if args.scan:
             scanner.scan(args.scan)
+        if args.creds:
+            commonCreds.saveCommonCreds()
         if args.connect:
             if args.info:
                 connector.getDeviceFacts(args.connect)

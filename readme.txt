@@ -93,23 +93,16 @@ the configurer:
 to do:
 
 - common credentials are to be entered by the user, saved, and used for connection with commoncreds, user can enter like 3 commoncreds to not tire ssh(for laterrrr)
+    - a cred password to view creds
+    - saveCreds to encrypt and save creds to file
+    - commonCreds to return creds
+
+
 
 - a wizard that finds your topology and sets a general config automatically (hard)
 
 - locally saves device creds of machines with specific ip
 
-- one problem. making sure creating vlans dont cut the internet connection while the configuration is being done. 
-
 - testing to be done on all commands
 
-- delete for subcommands
 
-- clean functions optimize structure***
-
-rollback. timer or similar
-
-- speed/duplex
-
-- acl wiring to be done
-
-acl ### 1 things to do ###
