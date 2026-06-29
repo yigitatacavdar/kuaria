@@ -23,6 +23,8 @@ see current feature document for work flow
 
 to become a collaborator, just email me at yigitatacavdar@gmail.com
 
+pip install kuaria
+
 ---------------------------------------------------------------------
 
 Dev Guide:
